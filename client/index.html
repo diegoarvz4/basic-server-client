@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    #container {
+      max-width: 50vw;
+      margin: 0 auto;
+      height: 300px;
+    }
+  </style>
+  <title>Document</title>
+</head>
+<body>
+
+  <div id="container"></div>
+
+  <script>
+    // Este es el 'endpoint' al cual haremos peticiones
+    const url = 'http://localhost:1337/'
+    const container = document.getElementById('container')
+    const buttons = ['Salute 1', 'Salute 2', 'Salute 3']
+
+    // Crear botones y renderearlos
+    buttons.forEach(button => {
+      const buttonElement = document.createElement('button')
+      buttonElement.innerHTML = button
+      buttonElement.id = "button-" + buttons.indexOf(button)
+      buttonElement.style.width = '100px'
+      buttonElement.style.height = '100px'
+      container.appendChild(buttonElement)
+    })
+
+    // Evento para cuando hagas click en un botón
+    // se ejecute una petición al servidor con el método fetch()
+    container.addEventListener('click', async function(event) {
+      let clicked = event.target
+      if(clicked.id.includes('button')) {
+        let path = ''
+        switch(clicked.id.charAt(clicked.id.length - 1)) {
+          case '0':
+            path = 'hello'
+            break;
+          case '1':
+            path = 'good-morning'
+            break;
+          case '2':
+            path = 'whats-up'
+            break;
+          default:
+            break
+          }
+        // fetch() es una operación asíncrona por lo que es necesario
+        // usar el 'await' keyword - y la 'async' keyword antes de 'function'
+        // fetch() es una función global (una web api) disponible en javascript
+        await fetch(url + path).then(res => res.json()).then(data => {
+          // una vez obtenida la información del servidor
+          // utilízala para renderearla en un div
+          const messageElement = document.createElement('div')
+          messageElement.innerHTML = data.message
+          container.appendChild(messageElement)
+        })
+      } 
+    });
+
+
+  </script>
+</body>
+</html>
